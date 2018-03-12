@@ -51,7 +51,7 @@ func (l *HTTPLogger) NewLogEntry(r *http.Request) *HTTPLoggerEntry {
 	logFields := logrus.Fields{}
 
 	if reqID := middleware.GetReqID(r.Context()); reqID != "" {
-		logFields["req_id"] = reqID
+		logFields["request_id"] = reqID
 	}
 
 	scheme := "http"
@@ -60,6 +60,7 @@ func (l *HTTPLogger) NewLogEntry(r *http.Request) *HTTPLoggerEntry {
 	}
 	host := r.Host
 
+	logFields["tags"] = []string{"request"}
 	logFields["http_scheme"] = scheme
 	logFields["http_proto"] = r.Proto
 	logFields["http_method"] = r.Method
@@ -96,7 +97,7 @@ type HTTPLoggerEntry struct {
 func (l *HTTPLoggerEntry) Write(status, bytes int, elapsed time.Duration) {
 	l.Logger = l.Logger.WithFields(logrus.Fields{
 		"resp_status": status, "resp_bytes_length": bytes,
-		"resp_elapsed_ms": float64(elapsed.Nanoseconds()) / 1000000.0,
+		"duration": fmt.Sprint(elapsed),
 	})
 
 	if l.Level == nil {

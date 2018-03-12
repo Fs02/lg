@@ -60,7 +60,7 @@ func (l *SanitizingHTTPLogger) NewLogEntry(r *http.Request) *HTTPLoggerEntry {
 	logFields := logrus.Fields{}
 
 	if reqID := middleware.GetReqID(r.Context()); reqID != "" {
-		logFields["req_id"] = reqID
+		logFields["request_id"] = reqID
 	}
 
 	scheme := "http"
@@ -69,6 +69,7 @@ func (l *SanitizingHTTPLogger) NewLogEntry(r *http.Request) *HTTPLoggerEntry {
 	}
 	host := r.Host
 
+	logFields["tags"] = []string{"request"}
 	logFields["http_scheme"] = scheme
 	logFields["http_proto"] = r.Proto
 	logFields["http_method"] = r.Method
